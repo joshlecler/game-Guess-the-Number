@@ -1,0 +1,33 @@
+import socket
+
+def play_game():
+    print("Welcome to Guess the Number!")
+    print("I'm thinking of a number between 1 and 100.")
+
+    while True:
+        guess = input("Enter your guess (or 'exit' to end the game): ")
+
+        if guess.lower() == 'exit':
+            print("Goodbye!")
+            break
+
+        try:
+            guess = int(guess)
+        except ValueError:
+            print("Please enter a valid number.")
+            continue
+
+        server_address = ('localhost', 12345)  # Змініть на реальні дані сервера
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect(server_address)
+            s.sendall(str(guess).encode())
+            data = s.recv(1024)
+
+        response = data.decode()
+        print(response)
+
+        if response == "Congratulations! You guessed the number.":
+            break
+
+if __name__ == "__main__":
+    play_game()
